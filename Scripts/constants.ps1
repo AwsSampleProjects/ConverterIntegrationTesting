@@ -1,0 +1,5 @@
+$BUCKET_NAME = "converter-bucket"
+$ENDPOINT = "http://localhost:4566"
+$REGION = "eu-central-1"
+$QUEUE_NAME = "converter-queue"
+$QUEUE_URL = "http://localhost:4566/000000000000/$QUEUE_NAME" 

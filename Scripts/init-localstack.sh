@@ -21,7 +21,17 @@ awslocal s3api put-bucket-notification-configuration \
         "QueueConfigurations": [
             {
                 "QueueArn": "'$QUEUE_ARN'",
-                "Events": ["s3:ObjectCreated:*"]
+                "Events": ["s3:ObjectCreated:*"],
+                "Filter": {
+                    "Key": {
+                        "FilterRules": [
+                            {
+                                "Name": "suffix",
+                                "Value": ".xml"
+                            }
+                        ]
+                    }
+                }
             }
         ]
     }'
