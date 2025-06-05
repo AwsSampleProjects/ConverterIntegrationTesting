@@ -41,4 +41,32 @@ public class S3Service : IS3Service
             throw;
         }
     }
+
+    public async Task SaveOutputContractToS3Async(string bucketName, string folderName, OutputContract contract)
+    {
+        try
+        {
+            var json = JsonSerializer.Serialize(contract, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
+
+            var key = $"{folderName}/Contract_{contract.ContractId}.json";
+            var request = new PutObjectRequest
+            {
+                BucketName = bucketName,
+                Key = key,
+                ContentBody = json,
+                ContentType = "application/json"
+            };
+
+            await _s3Client.PutObjectAsync(request);
+            _logger.LogInformation("Saved output contract to S3. Bucket: {Bucket}, Key: {Key}", bucketName, key);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error saving output contract to S3. Bucket: {Bucket}, ContractId: {ContractId}", bucketName, contract.ContractId);
+            throw;
+        }
+    }
 } 

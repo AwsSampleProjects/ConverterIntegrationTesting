@@ -12,6 +12,7 @@ public static class S3ServiceExtension
     public static IServiceCollection AddS3Service(this IServiceCollection services, IConfiguration configuration,
         string environmentName)
     {
+        services.Configure<S3Settings>(configuration.GetSection("S3"));
         services.Configure<LocalStackSettings>(configuration.GetSection("LocalStack"));
 
         services.AddTransient<IAmazonS3>(sp =>
