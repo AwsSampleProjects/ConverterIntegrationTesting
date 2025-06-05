@@ -1,4 +1,7 @@
-﻿namespace ConverterApplication.Domain.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace ConverterApplication.Domain.Models;
+
 
 public class Contract
 {
