@@ -1,4 +1,5 @@
-$BUCKET_NAME = "converter-bucket"
+$INPUT_BUCKET_NAME = "converter-input-bucket"
+$OUTPUT_BUCKET_NAME = "converter-output-bucket"
 $ENDPOINT = "http://localhost:4566"
 $REGION = "eu-central-1"
 $QUEUE_NAME = "converter-queue"

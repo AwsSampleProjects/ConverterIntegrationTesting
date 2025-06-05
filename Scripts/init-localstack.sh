@@ -1,26 +1,28 @@
 #!/bin/bash
 
 AWS_REGION="eu-central-1"
-AWS_BUCKET="converter-bucket"
-AWS_QUEUE="converter-queue"
+INPUT_BUCKET_NAME="converter-input-bucket"
+OUTPUT_BUCKET_NAME="converter-output-bucket"
+SQS_QUEUE_NAME="converter-queue"
 
 # Create queue
-awslocal sqs create-queue --queue-name "$AWS_QUEUE" --region "$AWS_REGION"
+awslocal sqs create-queue --queue-name "$SQS_QUEUE_NAME" --region "$AWS_REGION"
 
 # Initialize queue ARN
 QUEUE_ARN=$(awslocal sqs get-queue-attributes \
-    --queue-url http://localhost:4566/000000000000/"$AWS_QUEUE" \
+    --queue-url http://localhost:4566/000000000000/"$SQS_QUEUE_NAME" \
     --attribute-names QueueArn \
     --query 'Attributes.QueueArn' \
     --output text \
     --region "$AWS_REGION")
 
-# Create bucket
-awslocal s3 mb s3://"$AWS_BUCKET" --region "$AWS_REGION"
+# Create buckets
+awslocal s3 mb s3://"$INPUT_BUCKET_NAME" --region "$AWS_REGION"
+awslocal s3 mb s3://"$OUTPUT_BUCKET_NAME" --region "$AWS_REGION"
 
 # Set bucket notification configuration
 awslocal s3api put-bucket-notification-configuration \
-    --bucket "$AWS_BUCKET" \
+    --bucket "$INPUT_BUCKET_NAME" \
     --notification-configuration '{
         "QueueConfigurations": [
             {
@@ -31,7 +33,7 @@ awslocal s3api put-bucket-notification-configuration \
                         "FilterRules": [
                             {
                                 "Name": "suffix",
-                                "Value": ".xml"
+                                "Value": ".json"
                             }
                         ]
                     }
@@ -39,6 +41,6 @@ awslocal s3api put-bucket-notification-configuration \
             }
         ]
     }'
-
+    
 # Clear queue with test messages
-awslocal sqs purge-queue --queue-url http://localhost:4566/000000000000/"$AWS_QUEUE" --region "$AWS_REGION"
+awslocal sqs purge-queue --queue-url http://localhost:4566/000000000000/"$SQS_QUEUE_NAME" --region "$AWS_REGION"

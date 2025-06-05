@@ -1,0 +1,14 @@
+{
+  "ContractId": 1001,
+  "CompanyId": 123,
+  "SignatureDate": "2023-01-15",
+  "UserData": {
+    "Name": "John",
+    "Surname": "Doe",
+    "DateOfBirth": "1985-05-20",
+    "ZipCode": "12345",
+    "City": "Anytown",
+    "Street": "Main St 10"
+  },
+  "Category": "Health"
+}
