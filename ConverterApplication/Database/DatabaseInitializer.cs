@@ -1,7 +1,7 @@
-using ConverterApplication.Models;
+using ConverterApplication.Database.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace ConverterApplication.Services;
+namespace ConverterApplication.Database;
 
 public class DatabaseInitializer
 {

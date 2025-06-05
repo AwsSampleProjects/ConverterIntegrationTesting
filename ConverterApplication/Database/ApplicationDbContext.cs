@@ -1,7 +1,7 @@
-using ConverterApplication.Models;
+using ConverterApplication.Database.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace ConverterApplication;
+namespace ConverterApplication.Database;
 
 public class ApplicationDbContext : DbContext
 {

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace ConverterApplication.Models;
+namespace ConverterApplication.Database.Models;
 
 public class Asset
 {

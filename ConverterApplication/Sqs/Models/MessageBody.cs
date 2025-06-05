@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace ConverterApplication.SqsModels;
+namespace ConverterApplication.Sqs.Models;
 
 public class MessageBody
 {

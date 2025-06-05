@@ -1,8 +1,9 @@
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using System.Text.Json;
+using ConverterApplication.S3;
 using ConverterApplication.Settings;
-using ConverterApplication.SqsModels;
+using ConverterApplication.Sqs.Models;
 using Microsoft.Extensions.Options;
 
 namespace ConverterApplication;
@@ -12,13 +13,19 @@ public class Worker : BackgroundService
     private readonly ILogger<Worker> _logger;
     private readonly IAmazonSQS _sqsClient;
     private readonly SqsSettings _sqsSettings;
+    private readonly IS3Service _s3Service;
     private string? _queueUrl;
 
-    public Worker(ILogger<Worker> logger, IAmazonSQS sqsClient, IOptions<SqsSettings> sqsSettings)
+    public Worker(
+        ILogger<Worker> logger, 
+        IAmazonSQS sqsClient, 
+        IOptions<SqsSettings> sqsSettings,
+        IS3Service s3Service)
     {
         _logger = logger;
         _sqsClient = sqsClient;
         _sqsSettings = sqsSettings.Value;
+        _s3Service = s3Service;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -46,9 +53,13 @@ public class Worker : BackgroundService
                         if (messageBody?.Records != null && messageBody.Records.Any())
                         {
                             var s3Event = messageBody.Records[0];
-                            var s3ObjectKey = s3Event.S3.Object.Key;
+                            var bucketName = s3Event.S3.Bucket.Name;
+                            var objectKey = s3Event.S3.Object.Key;
                             
-                            _logger.LogInformation("Received S3 object key: {Key}", s3ObjectKey);
+                            _logger.LogInformation("Processing S3 object. Bucket: {Bucket}, Key: {Key}", bucketName, objectKey);
+                            
+                            var contracts = await _s3Service.GetContractsFromS3Async(bucketName, objectKey);
+                            _logger.LogInformation("Retrieved {Count} contracts from S3", contracts.Count);
                             
                             await _sqsClient.DeleteMessageAsync(_queueUrl, message.ReceiptHandle, stoppingToken);
                         }

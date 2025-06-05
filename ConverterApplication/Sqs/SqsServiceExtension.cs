@@ -1,15 +1,13 @@
 using Amazon.Runtime;
 using Amazon.SQS;
 using ConverterApplication.Settings;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace ConverterApplication.Extensions;
+namespace ConverterApplication.Sqs;
 
-public static class SqsMessagingExtension
+public static class SqsServiceExtension
 {
-    public static IServiceCollection AddSqsMessaging(this IServiceCollection services, IConfiguration configuration,
+    public static IServiceCollection AddSqsService(this IServiceCollection services, IConfiguration configuration,
         string environmentName)
     {
         services.Configure<SqsSettings>(configuration.GetSection("Sqs"));
