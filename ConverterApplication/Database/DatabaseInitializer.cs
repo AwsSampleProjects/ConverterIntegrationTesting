@@ -14,20 +14,29 @@ public class DatabaseInitializer
 
     public async Task InitializeAsync()
     {
-        await _context.Database.EnsureCreatedAsync();
-
-        if (!await _context.Assets.AnyAsync())
+        try
         {
-            var assets = new List<Asset>
-            {
-                new() { CompanyId = 123, ContractId = 1001, Category = "Health" },
-                new() { CompanyId = 456, ContractId = 1002, Category = "Glass" },
-                new() { CompanyId = 678, ContractId = 1003, Category = "Health" },
-                new() { CompanyId = 111, ContractId = 1004, Category = "Life" }
-            };
+            await _context.Database.EnsureCreatedAsync();
 
-            await _context.Assets.AddRangeAsync(assets);
-            await _context.SaveChangesAsync();
+            var count = _context.Assets.Count();
+
+            if (count == 0)
+            {
+                var assets = new List<Asset>
+                {
+                    new() { CompanyId = 123, ContractId = 1001, Category = "Health" },
+                    new() { CompanyId = 456, ContractId = 1002, Category = "Glass" },
+                    new() { CompanyId = 678, ContractId = 1003, Category = "Health" },
+                    new() { CompanyId = 111, ContractId = 1004, Category = "Life" }
+                };
+
+                await _context.Assets.AddRangeAsync(assets);
+                await _context.SaveChangesAsync();
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Failed to initialize database: {ex.Message}", ex);
         }
     }
-} 
+}
