@@ -18,15 +18,11 @@ public class TestInitializer
 
     public TestInitializer()
     {
-        var builder = new HostApplicationBuilder(new HostApplicationBuilderSettings
-        {
-            EnvironmentName = "Development"
-        });
+        var builder = new HostApplicationBuilder(new HostApplicationBuilderSettings());
 
         var configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json")
-            .AddJsonFile("appsettings.Development.json", optional: true)
             .Build();
 
         builder.Configuration.AddConfiguration(configuration);
@@ -38,6 +34,7 @@ public class TestInitializer
         builder.Services.AddScoped<IAssetRepository, AssetRepository>();
         builder.Services.AddScoped<IContractConverterService, ContractConverterService>();
         builder.Services.AddScoped<IQueryTrackingService, QueryTrackingService>();
+        builder.Services.AddHostedService<Worker>();
 
         Host = builder.Build();
         ServiceProvider = Host.Services;

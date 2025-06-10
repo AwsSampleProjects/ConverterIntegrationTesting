@@ -1,0 +1,26 @@
+{
+  "CorrelationId": "5deaa247-1e8c-437c-9c22-f4d164fae0f1",
+  "Timestamp": "2025-06-10T20:38:11.1048588Z",
+  "Queries": [
+    {
+      "CorrelationId": "5deaa247-1e8c-437c-9c22-f4d164fae0f1",
+      "Query": "SELECT * FROM \u0022Asset\u0022 WHERE \u0022CompanyId\u0022 = @CompanyId",
+      "Parameters": {
+        "CompanyId": 123
+      },
+      "Timestamp": "2025-06-10T20:38:11.081551Z",
+      "Response": "{\u0022Id\u0022:\u00229ec63689-297b-45d3-a995-a76735fd416e\u0022,\u0022CompanyId\u0022:123,\u0022ContractId\u0022:1001,\u0022Category\u0022:\u0022Health\u0022}",
+      "Duration": "00:00:00.0023653"
+    },
+    {
+      "CorrelationId": "5deaa247-1e8c-437c-9c22-f4d164fae0f1",
+      "Query": "SELECT * FROM \u0022Asset\u0022 WHERE \u0022CompanyId\u0022 = @CompanyId",
+      "Parameters": {
+        "CompanyId": 456
+      },
+      "Timestamp": "2025-06-10T20:38:11.096111Z",
+      "Response": "{\u0022Id\u0022:\u0022b6146aab-249e-4f95-9b3b-eaa406a74690\u0022,\u0022CompanyId\u0022:456,\u0022ContractId\u0022:1002,\u0022Category\u0022:\u0022Glass\u0022}",
+      "Duration": "00:00:00.0012022"
+    }
+  ]
+}
