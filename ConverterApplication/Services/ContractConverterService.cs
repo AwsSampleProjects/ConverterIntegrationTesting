@@ -1,11 +1,9 @@
-using System.Text.Json;
-using ConverterApplication.Database.Models;
 using ConverterApplication.Database.Repositories;
-using ConverterApplication.Database.Services;
 using ConverterApplication.Domain.Models;
 using ConverterApplication.S3;
 using ConverterApplication.Settings;
 using Microsoft.Extensions.Options;
+using QueryLogger;
 
 namespace ConverterApplication.Services;
 

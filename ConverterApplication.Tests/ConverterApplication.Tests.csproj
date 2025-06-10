@@ -31,6 +31,18 @@
         <None Update="appsettings.Development.json">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>
+        <None Update="TestFiles\ContractTest_1\Input\Contracts_5deaa247-1e8c-437c-9c22-f4d164fae0f1.json">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="TestFiles\ContractTest_1\Output\Contract_1001_5deaa247-1e8c-437c-9c22-f4d164fae0f1.json">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="TestFiles\ContractTest_1\Output\Contract_1002_5deaa247-1e8c-437c-9c22-f4d164fae0f1.json">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="TestFiles\ContractTest_1\Queries\Queries_5deaa247-1e8c-437c-9c22-f4d164fae0f1.json">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
 </Project> 

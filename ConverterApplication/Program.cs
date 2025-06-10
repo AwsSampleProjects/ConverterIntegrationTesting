@@ -1,10 +1,10 @@
 using ConverterApplication;
 using ConverterApplication.Database.Dapper;
 using ConverterApplication.Database.Repositories;
-using ConverterApplication.Database.Services;
 using ConverterApplication.S3;
 using ConverterApplication.Sqs;
 using ConverterApplication.Services;
+using QueryLogger;
 
 Console.WriteLine("### Starting Converter Application ###");
 

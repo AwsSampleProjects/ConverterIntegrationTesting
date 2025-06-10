@@ -1,7 +1,7 @@
 using ConverterApplication.Database.Models;
-using ConverterApplication.Database.Services;
 using Dapper;
 using Npgsql;
+using QueryLogger;
 
 namespace ConverterApplication.Database.Repositories;
 

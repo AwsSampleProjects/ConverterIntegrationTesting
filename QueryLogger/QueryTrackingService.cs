@@ -1,8 +1,7 @@
 using System.Text.Json;
-using ConverterApplication.Database.Models;
 using Microsoft.Extensions.Logging;
 
-namespace ConverterApplication.Database.Services;
+namespace QueryLogger;
 
 public interface IQueryTrackingService
 {
@@ -60,7 +59,7 @@ public class QueryTrackingService : IQueryTrackingService
                 return;
             }
 
-            var fileName = $"queries_{correlationId}.json";
+            var fileName = $"Queries_{correlationId}.json";
             var filePath = Path.Combine(_queryLogsDirectory, fileName);
 
             var queryLog = new

@@ -16,7 +16,10 @@ public class WorkerTests : IAsyncLifetime
 
     public WorkerTests()
     {
-        _initializer = new TestInitializer();
+        var queryResponsePath = Path.Combine(AppContext.BaseDirectory, "TestFiles/ContractTest_1/Input", "Contracts_5deaa247-1e8c-437c-9c22-f4d164fae0f1.json");
+        if(!File.Exists(queryResponsePath))
+            throw new FileNotFoundException(queryResponsePath);
+        _initializer = new TestInitializer(queryResponsePath);
         _host = _initializer.Host;
     }
 
@@ -25,7 +28,6 @@ public class WorkerTests : IAsyncLifetime
         try
         {
             await _initializer.InitializeAsync();
-            _queueUrl = await GetQueueUrlAsync();
             await _host.StartAsync();
         }
         catch (Exception ex)
