@@ -4,7 +4,6 @@ using ConverterApplication.Database.Models;
 using ConverterApplication.Domain.Models;
 using ConverterApplication.S3;
 using ConverterApplication.Settings;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace ConverterApplication.Services;
