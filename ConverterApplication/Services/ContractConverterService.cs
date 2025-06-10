@@ -1,6 +1,6 @@
 using System.Text.Json;
-using ConverterApplication.Database;
 using ConverterApplication.Database.Models;
+using ConverterApplication.Database.Repositories;
 using ConverterApplication.Domain.Models;
 using ConverterApplication.S3;
 using ConverterApplication.Settings;
@@ -13,15 +13,18 @@ public class ContractConverterService : IContractConverterService
     private readonly ILogger<ContractConverterService> _logger;
     private readonly IS3Service _s3Service;
     private readonly S3Settings _s3Settings;
+    private readonly IAssetRepository _assetRepository;
 
     public ContractConverterService(
         ILogger<ContractConverterService> logger,
         IS3Service s3Service,
-        IOptions<S3Settings> s3Settings)
+        IOptions<S3Settings> s3Settings,
+        IAssetRepository assetRepository)
     {
         _logger = logger;
         _s3Service = s3Service;
         _s3Settings = s3Settings.Value;
+        _assetRepository = assetRepository;
     }
 
     public async Task ConvertContractsAsync(List<Contract> contracts)
@@ -30,13 +33,7 @@ public class ContractConverterService : IContractConverterService
         {
             try
             {
-                Asset asset = null; // Get asset from the DB
-
-                if (asset == null)
-                {
-                    _logger.LogWarning("No asset found for CompanyId: {CompanyId}", contract.CompanyId);
-                    continue;
-                }
+                var asset = await _assetRepository.GetByCompanyIdAsync(contract.CompanyId);
 
                 var outputContract = new OutputContract
                 {

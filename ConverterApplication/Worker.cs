@@ -49,7 +49,9 @@ public class Worker : BackgroundService
                 };
 
                 var response = await _sqsClient.ReceiveMessageAsync(receiveMessageRequest, stoppingToken);
-
+                
+                if (response.Messages is null) continue;
+                
                 foreach (var message in response.Messages)
                 {
                     try
