@@ -1,5 +1,6 @@
 using System.Text.Json;
 using ConverterApplication.Database;
+using ConverterApplication.Database.Models;
 using ConverterApplication.Domain.Models;
 using ConverterApplication.S3;
 using ConverterApplication.Settings;
@@ -10,18 +11,15 @@ namespace ConverterApplication.Services;
 
 public class ContractConverterService : IContractConverterService
 {
-    private readonly ApplicationDbContext _dbContext;
     private readonly ILogger<ContractConverterService> _logger;
     private readonly IS3Service _s3Service;
     private readonly S3Settings _s3Settings;
 
     public ContractConverterService(
-        ApplicationDbContext dbContext, 
         ILogger<ContractConverterService> logger,
         IS3Service s3Service,
         IOptions<S3Settings> s3Settings)
     {
-        _dbContext = dbContext;
         _logger = logger;
         _s3Service = s3Service;
         _s3Settings = s3Settings.Value;
@@ -33,8 +31,7 @@ public class ContractConverterService : IContractConverterService
         {
             try
             {
-                var asset = await _dbContext.Assets
-                    .FirstOrDefaultAsync(a => a.CompanyId == contract.CompanyId);
+                Asset asset = null; // Get asset from the DB
 
                 if (asset == null)
                 {
