@@ -8,15 +8,20 @@ public interface IQueryTrackingService
 {
     DatabaseQuery StartQuery(Guid correlationId, string query, object? parameters);
     void CompleteQuery(DatabaseQuery query, object? response);
+    Task SaveQueriesAsync(Guid correlationId);
 }
 
 public class QueryTrackingService : IQueryTrackingService
 {
     private readonly ILogger<QueryTrackingService> _logger;
+    private readonly string _queryLogsDirectory;
+    private readonly Dictionary<Guid, List<DatabaseQuery>> _queries = new();
 
     public QueryTrackingService(ILogger<QueryTrackingService> logger)
     {
         _logger = logger;
+        _queryLogsDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "QueryLogs");
+        Directory.CreateDirectory(_queryLogsDirectory);
     }
 
     public DatabaseQuery StartQuery(Guid correlationId, string query, object? parameters)
@@ -29,8 +34,13 @@ public class QueryTrackingService : IQueryTrackingService
             Timestamp = DateTime.UtcNow
         };
 
-        _logger.LogInformation("Starting database query. CorrelationId: {CorrelationId}, Query: {Query}, Parameters: {Parameters}",
-            databaseQuery.CorrelationId, query, JsonSerializer.Serialize(parameters));
+        if (!_queries.TryGetValue(correlationId, out var value))
+        {
+            value = [];
+            _queries[correlationId] = value;
+        }
+
+        value.Add(databaseQuery);
 
         return databaseQuery;
     }
@@ -39,8 +49,38 @@ public class QueryTrackingService : IQueryTrackingService
     {
         query.Response = JsonSerializer.Serialize(response);
         query.Duration = DateTime.UtcNow - query.Timestamp;
+    }
 
-        _logger.LogInformation("Completed database query. CorrelationId: {CorrelationId}, Duration: {Duration}ms, Response: {Response}",
-            query.CorrelationId, query.Duration.TotalMilliseconds, query.Response);
+    public async Task SaveQueriesAsync(Guid correlationId)
+    {
+        try
+        {
+            if (!_queries.TryGetValue(correlationId, out var queries))
+            {
+                return;
+            }
+
+            var fileName = $"queries_{correlationId}.json";
+            var filePath = Path.Combine(_queryLogsDirectory, fileName);
+
+            var queryLog = new
+            {
+                CorrelationId = correlationId,
+                Timestamp = DateTime.UtcNow,
+                Queries = queries
+            };
+
+            var json = JsonSerializer.Serialize(queryLog, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
+
+            await File.WriteAllTextAsync(filePath, json);
+            _queries.Remove(correlationId);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error saving queries to file. CorrelationId: {CorrelationId}", correlationId);
+        }
     }
 } 

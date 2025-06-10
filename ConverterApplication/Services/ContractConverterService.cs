@@ -1,6 +1,7 @@
 using System.Text.Json;
 using ConverterApplication.Database.Models;
 using ConverterApplication.Database.Repositories;
+using ConverterApplication.Database.Services;
 using ConverterApplication.Domain.Models;
 using ConverterApplication.S3;
 using ConverterApplication.Settings;
@@ -14,27 +15,30 @@ public class ContractConverterService : IContractConverterService
     private readonly IS3Service _s3Service;
     private readonly S3Settings _s3Settings;
     private readonly IAssetRepository _assetRepository;
+    private readonly IQueryTrackingService _queryTrackingService;
 
     public ContractConverterService(
         ILogger<ContractConverterService> logger,
         IS3Service s3Service,
         IOptions<S3Settings> s3Settings,
-        IAssetRepository assetRepository)
+        IAssetRepository assetRepository,
+        IQueryTrackingService queryTrackingService)
     {
         _logger = logger;
         _s3Service = s3Service;
         _s3Settings = s3Settings.Value;
         _assetRepository = assetRepository;
+        _queryTrackingService = queryTrackingService;
     }
 
     public async Task ConvertContractsAsync(List<Contract> contracts)
     {
+        var correlationId = Guid.NewGuid();
+
         foreach (var contract in contracts)
         {
             try
             {
-                var correlationId = Guid.NewGuid();
-
                 var asset = await _assetRepository.GetByCompanyIdAsync(contract.CompanyId, correlationId);
 
                 var outputContract = new OutputContract
@@ -50,12 +54,13 @@ public class ContractConverterService : IContractConverterService
                     _s3Settings.OutputBucketName,
                     _s3Settings.OutputFolderName,
                     outputContract);
-
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error converting contract {ContractId}", contract.ContractId);
             }
         }
+
+        await _queryTrackingService.SaveQueriesAsync(correlationId);
     }
 }
