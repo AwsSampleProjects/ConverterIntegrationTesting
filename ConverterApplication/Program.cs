@@ -1,6 +1,7 @@
 using ConverterApplication;
 using ConverterApplication.Database.Dapper;
 using ConverterApplication.Database.Repositories;
+using ConverterApplication.Database.Services;
 using ConverterApplication.S3;
 using ConverterApplication.Sqs;
 using ConverterApplication.Services;
@@ -15,6 +16,7 @@ builder.Services.AddS3Service(builder.Configuration, builder.Environment.Environ
 builder.Services.AddScoped<IDataContext, DataContext>();
 builder.Services.AddScoped<IAssetRepository, AssetRepository>();
 builder.Services.AddScoped<IContractConverterService, ContractConverterService>();
+builder.Services.AddScoped<IQueryTrackingService, QueryTrackingService>();
 
 builder.Services.AddHostedService<Worker>();
 

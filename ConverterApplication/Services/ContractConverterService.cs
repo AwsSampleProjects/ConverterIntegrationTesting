@@ -33,7 +33,9 @@ public class ContractConverterService : IContractConverterService
         {
             try
             {
-                var asset = await _assetRepository.GetByCompanyIdAsync(contract.CompanyId);
+                var correlationId = Guid.NewGuid();
+
+                var asset = await _assetRepository.GetByCompanyIdAsync(contract.CompanyId, correlationId);
 
                 var outputContract = new OutputContract
                 {
@@ -48,6 +50,7 @@ public class ContractConverterService : IContractConverterService
                     _s3Settings.OutputBucketName,
                     _s3Settings.OutputFolderName,
                     outputContract);
+
             }
             catch (Exception ex)
             {
