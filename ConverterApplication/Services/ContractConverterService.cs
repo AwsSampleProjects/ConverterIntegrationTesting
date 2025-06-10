@@ -31,10 +31,8 @@ public class ContractConverterService : IContractConverterService
         _queryTrackingService = queryTrackingService;
     }
 
-    public async Task ConvertContractsAsync(List<Contract> contracts)
+    public async Task ConvertContractsAsync(List<Contract> contracts, Guid correlationId)
     {
-        var correlationId = Guid.NewGuid();
-
         foreach (var contract in contracts)
         {
             try
@@ -53,7 +51,8 @@ public class ContractConverterService : IContractConverterService
                 await _s3Service.SaveOutputContractToS3Async(
                     _s3Settings.OutputBucketName,
                     _s3Settings.OutputFolderName,
-                    outputContract);
+                    outputContract,
+                    correlationId);
             }
             catch (Exception ex)
             {

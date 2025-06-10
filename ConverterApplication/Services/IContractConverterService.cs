@@ -4,5 +4,5 @@ namespace ConverterApplication.Services;
 
 public interface IContractConverterService
 {
-    Task ConvertContractsAsync(List<Contract> contracts);
+    Task ConvertContractsAsync(List<Contract> contracts, Guid correlationId);
 }

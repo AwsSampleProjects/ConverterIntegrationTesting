@@ -28,12 +28,12 @@ public class S3Service : IS3Service
             };
 
             using var response = await _s3Client.GetObjectAsync(request);
-            using var responseStream = response.ResponseStream;
+            await using var responseStream = response.ResponseStream;
             using var reader = new StreamReader(responseStream);
             var content = await reader.ReadToEndAsync();
 
             var contracts = JsonSerializer.Deserialize<List<Contract>>(content);
-            return contracts ?? new List<Contract>();
+            return contracts ?? [];
         }
         catch (Exception ex)
         {
@@ -42,7 +42,7 @@ public class S3Service : IS3Service
         }
     }
 
-    public async Task SaveOutputContractToS3Async(string bucketName, string folderName, OutputContract contract)
+    public async Task SaveOutputContractToS3Async(string bucketName, string folderName, OutputContract contract, Guid correlationId)
     {
         try
         {
@@ -51,7 +51,7 @@ public class S3Service : IS3Service
                 WriteIndented = true
             });
 
-            var key = $"{folderName}/Contract_{contract.ContractId}.json";
+            var key = $"{folderName}/Contract_{contract.ContractId}_{correlationId}.json";
             var request = new PutObjectRequest
             {
                 BucketName = bucketName,
@@ -65,7 +65,7 @@ public class S3Service : IS3Service
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error saving output contract to S3. Bucket: {Bucket}, ContractId: {ContractId}", bucketName, contract.ContractId);
+            _logger.LogError(ex, "Error saving output contract to S3. Bucket: {Bucket}, ContractId: {ContractId}, CorrelationId: {CorrelationId}", bucketName, contract.ContractId, correlationId);
             throw;
         }
     }

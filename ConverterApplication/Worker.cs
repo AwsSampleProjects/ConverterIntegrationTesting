@@ -68,14 +68,26 @@ public class Worker : BackgroundService
                             
                             _logger.LogInformation("Processing S3 object. Bucket: {Bucket}, Key: {Key}", bucketName, objectKey);
                             
+                            var correlationId = ExtractCorrelationId(objectKey);
+                            if (!correlationId.HasValue)
+                            {
+                                _logger.LogError("Invalid filename format. Expected format: Contracts_<guid>.json. Actual filename: {Filename}", objectKey);
+                                await _sqsClient.DeleteMessageAsync(_queueUrl, message.ReceiptHandle, stoppingToken);
+                                continue;
+                            }
+                            
                             var contracts = await _s3Service.GetContractsFromS3Async(bucketName, objectKey);
                             _logger.LogInformation("Retrieved {Count} contracts from S3", contracts.Count);
                             
-                            await contractConverterService.ConvertContractsAsync(contracts);
+                            await contractConverterService.ConvertContractsAsync(contracts, correlationId.Value);
                             _logger.LogInformation("Successfully processed {Count} contracts", contracts.Count);
-                            
-                            await _sqsClient.DeleteMessageAsync(_queueUrl, message.ReceiptHandle, stoppingToken);
                         }
+                        else
+                        {
+                            _logger.LogWarning("Invalid message {MessageId}. Removing from the queue.", message.MessageId);
+                        }
+
+                        await _sqsClient.DeleteMessageAsync(_queueUrl, message.ReceiptHandle, stoppingToken);
                     }
                     catch (Exception ex)
                     {
@@ -101,5 +113,14 @@ public class Worker : BackgroundService
 
         var response = await _sqsClient.GetQueueUrlAsync(request);
         return response.QueueUrl;
+    }
+
+    private static Guid? ExtractCorrelationId(string objectKey)
+    {
+        var fileName = Path.GetFileNameWithoutExtension(objectKey);
+        if (!fileName.StartsWith("Contracts_")) return null;
+        
+        var guidPart = fileName.Substring("Contracts_".Length);
+        return Guid.TryParse(guidPart, out var guid) ? guid : null;
     }
 }
