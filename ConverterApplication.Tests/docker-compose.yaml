@@ -1,0 +1,27 @@
+services:
+  converter-localstack:
+    image: localstack/localstack:4.3.0
+    container_name: converter-localstack
+    environment:
+      - SERVICES=s3,logs,sqs
+      - AWS_REGION=eu-central-1
+      - PERSISTENCE=/var/lib/localstack/data
+      - GATEWAY_LISTEN=0.0.0.0
+      - HOSTNAME=0.0.0.0
+    ports:
+      - "4566:4566"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "localstack_data:/var/lib/localstack"
+      - "./Scripts/init-localstack.sh:/etc/localstack/init/ready.d/init-localstack.sh"
+    networks:
+      - common_network
+    restart: unless-stopped
+
+networks:
+  common_network:
+    driver: bridge
+
+volumes:
+  localstack_data:
+  postgres_data: 

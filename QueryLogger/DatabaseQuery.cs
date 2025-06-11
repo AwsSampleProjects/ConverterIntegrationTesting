@@ -1,6 +1,6 @@
 using System;
 
-namespace ConverterApplication.Database.Models;
+namespace QueryLogger;
 
 public class DatabaseQuery
 {

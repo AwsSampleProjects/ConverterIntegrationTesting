@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConverterApplication", "Con
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConverterApplication.Tests", "ConverterApplication.Tests\ConverterApplication.Tests.csproj", "{F79AEC82-DE86-4F7F-8618-9984BD272A95}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QueryLogger", "QueryLogger\QueryLogger.csproj", "{47A1E626-51C1-4E04-9ACF-26C9997532CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{F79AEC82-DE86-4F7F-8618-9984BD272A95}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F79AEC82-DE86-4F7F-8618-9984BD272A95}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F79AEC82-DE86-4F7F-8618-9984BD272A95}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47A1E626-51C1-4E04-9ACF-26C9997532CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47A1E626-51C1-4E04-9ACF-26C9997532CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47A1E626-51C1-4E04-9ACF-26C9997532CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47A1E626-51C1-4E04-9ACF-26C9997532CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
