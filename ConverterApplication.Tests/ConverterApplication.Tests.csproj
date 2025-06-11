@@ -9,6 +9,8 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+        <PackageReference Include="Testcontainers" Version="4.5.0" />
+        <PackageReference Include="Testcontainers.LocalStack" Version="4.5.0" />
         <PackageReference Include="xunit" Version="2.6.6" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.5.6">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -41,6 +43,9 @@
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <None Update="TestFiles\ContractTest_1\Queries\Queries_5deaa247-1e8c-437c-9c22-f4d164fae0f1.json">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Update="Scripts\init-localstack.sh">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
     </ItemGroup>

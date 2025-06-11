@@ -1,3 +1,4 @@
+using ConverterApplication.Database.Models;
 using ConverterApplication.Database.Repositories;
 using ConverterApplication.Domain.Models;
 using ConverterApplication.S3;

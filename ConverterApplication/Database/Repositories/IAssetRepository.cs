@@ -4,5 +4,5 @@ namespace ConverterApplication.Database.Repositories;
 
 public interface IAssetRepository
 {
-    Task<Asset> GetByCompanyIdAsync(int companyId, Guid correlationId);
+    Task<Asset?> GetByCompanyIdAsync(int companyId, Guid correlationId);
 } 

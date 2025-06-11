@@ -11,22 +11,21 @@ public class FakeAssetRepository : IAssetRepository
 
     public FakeAssetRepository(string queryResponsePath)
     {
+        if (!File.Exists(queryResponsePath))
+            throw new FileNotFoundException(queryResponsePath);
+
         var json = File.ReadAllText(queryResponsePath);
-        var response = JsonSerializer.Deserialize<QueryLog>(json) ?? throw new InvalidOperationException("Failed to deserialize query response");
+        var response = JsonSerializer.Deserialize<QueryLog>(json) ??
+                       throw new InvalidOperationException("Failed to deserialize query response");
         _queries = response.Queries;
     }
 
-    public async Task<Asset> GetByCompanyIdAsync(int companyId, Guid correlationId)
+    public async Task<Asset?> GetByCompanyIdAsync(int companyId, Guid correlationId)
     {
-        const string query = @"SELECT * FROM ""Asset"" WHERE ""CompanyId"" = @CompanyId";
-        var parameters = new { CompanyId = companyId };
-        
-        var matchingQuery = _queries.FirstOrDefault(q => 
-            q.Query == query && 
-            q.Parameters is not null &&
-            JsonSerializer.Deserialize<Dictionary<string, object>>(JsonSerializer.Serialize(q.Parameters)) is var dict &&
-            dict.ContainsKey("CompanyId") && 
-            Convert.ToInt32(dict["CompanyId"]) == companyId);
+        const string query = AssetRepository.Query;
+
+        // TODO: Do better comparision for parameters
+        var matchingQuery = _queries.FirstOrDefault(q => q.Query == query && q.Parameters.ToString().Contains(companyId.ToString()));
 
         if (matchingQuery == null)
         {
@@ -38,7 +37,7 @@ public class FakeAssetRepository : IAssetRepository
         {
             throw new InvalidOperationException("Failed to deserialize asset response");
         }
-        
+
         return result;
     }
 }
@@ -48,4 +47,4 @@ public class QueryLog
     public Guid CorrelationId { get; set; }
     public DateTime Timestamp { get; set; }
     public List<DatabaseQuery> Queries { get; set; } = new();
-} 
+}
