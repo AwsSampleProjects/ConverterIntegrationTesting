@@ -1,5 +1,6 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
+using System.Text.Json;
 
 namespace ConverterApplication.Tests.Tools;
 
@@ -88,5 +89,21 @@ public class S3Helper
             await Console.Error.WriteLineAsync($"An unexpected error occurred during upload of '{localFilePath}': {ex.Message}");
             return false;
         }
+    }
+
+    public async Task<T> DownloadFile<T>(string bucketName, string fileName)
+    {
+        var response = await _s3Client.GetObjectAsync(bucketName, fileName);
+        
+        using var reader = new StreamReader(response.ResponseStream);
+        var json = await reader.ReadToEndAsync();
+        
+        var result = JsonSerializer.Deserialize<T>(json);
+        if (result == null)
+        {
+            throw new InvalidOperationException($"Failed to deserialize file {fileName} from bucket {bucketName}");
+        }
+
+        return result;
     }
 }
